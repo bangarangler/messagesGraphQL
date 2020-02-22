@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
+const { combineResolvers } = require("graphql-resolvers");
 const { AuthenticationError, UserInputError } = require("apollo-server");
+const { isAdmin } = require("./authorization");
 
 const createToken = async (user, secret, expiresIn) => {
-  const { id, email, username } = user;
-  return await jwt.sign({ id, email, username }, secret, {
+  const { id, email, username, role } = user;
+  return await jwt.sign({ id, email, username, role }, secret, {
     expiresIn,
   })
 };
@@ -52,7 +54,15 @@ module.exports = {
         throw new AuthenticationError('Invalid password.')
       }
       return { token: createToken(user, secret, '30m') }
-    }
+    },
+    deleteUser: combineResolvers(
+      isAdmin,
+      async (parent, { id }, { models }) => {
+        return await models.User.destroy({
+          where: { id }
+        })
+      }
+      )
   },
   User: {
     messages: async (user, args, { models }) => {
