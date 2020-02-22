@@ -11,10 +11,14 @@ module.exports =  {
   },
   Mutation: {
     createMessage: async (parent, { text }, { me, models }) => {
+      try {
       return await models.Message.create({
         text,
         userId: me.id
       })
+      } catch (err) {
+        throw new Error(err)
+      }
     },
 
     deleteMessage: async (parent, { id }, { models }) => {

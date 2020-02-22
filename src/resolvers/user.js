@@ -7,6 +7,9 @@ module.exports = {
       return await models.User.findByPk(id)
     },
     me: async (parent, args, { models, me }, info) => {
+      if (!me) {
+        return null;
+      }
       return await models.User.findByPk(me.id)
     },
   },
