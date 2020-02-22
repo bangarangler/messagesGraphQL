@@ -31,7 +31,8 @@ app.use(cors())
     },
     context: async () => ({
       models,
-      me: await models.User.findByLogin('jdain')
+      me: await models.User.findByLogin('jdain'),
+      secret: process.env.SECRET,
     })
   })
 
@@ -53,6 +54,8 @@ const createUsersWithMessages = async () => {
   await models.User.create(
     {
       username: 'jdain',
+      email: 'jon@test.com',
+      password: 'testing',
       messages: [
         {
           text: 'Working on api'
@@ -67,6 +70,8 @@ const createUsersWithMessages = async () => {
   await models.User.create(
     {
       username: 'kbacon',
+      email: 'kevin@test.com',
+      password: 'testing',
       messages: [
         {
           text: 'footlose is awesome!'
